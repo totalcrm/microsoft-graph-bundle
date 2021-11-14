@@ -2,12 +2,12 @@
 
 namespace TotalCRM\MicrosoftGraph\DependencyInjection;
 
+use TotalCRM\MicrosoftGraph\DependencyInjection\MicrosoftGraphResourceOwner as User;
 use League\OAuth2\Client\Provider\AbstractProvider;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use League\OAuth2\Client\Provider\GenericProvider;
 use League\OAuth2\Client\Token\AccessToken;
 use Psr\Http\Message\ResponseInterface;
-use TotalCRM\MicrosoftGraph\DependencyInjection\MicrosoftGraphResourceOwner as User;
 
 /**
  * Class MicrosoftGraphProvider

@@ -3,7 +3,7 @@
 namespace TotalCRM\MicrosoftGraph\Token;
 
 use League\OAuth2\Client\Token\AccessToken;
-use Symfony\Component\DependencyInjection\ContainerInterface as Container;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Session\Session;
 
@@ -13,22 +13,25 @@ use Symfony\Component\HttpFoundation\Session\Session;
  */
 class SessionStorage implements TokenStorageInterface
 {
-
-    private $session;
-    private $container;
+    private ContainerInterface $container;
+    private Session $session;
 
     /**
      * SessionStorage constructor.
      * @param Session $session
-     * @param Container $container
+     * @param ContainerInterface $container
      */
-    public function __construct(Session $session, Container $container)
+    public function __construct(Session $session, ContainerInterface $container)
     {
         $this->session = $session;
         $this->container = $container;
     }
 
-    public function setToken(AccessToken $token)
+    /**
+     * @param AccessToken $token
+     * @return void
+     */
+    public function setToken(AccessToken $token): void
     {
         $this->session->set('microsoft_graph_accesstoken', $token->getToken());
         $this->session->set('microsoft_graph_refreshtoken', $token->getRefreshToken());
@@ -39,7 +42,7 @@ class SessionStorage implements TokenStorageInterface
     /**
      * @return AccessToken
      */
-    public function getToken()
+    public function getToken(): AccessToken
     {
         $options['access_token'] = $this->session->get('microsoft_graph_accesstoken');
         $options['refresh_token'] = $this->session->get('microsoft_graph_refreshtoken');

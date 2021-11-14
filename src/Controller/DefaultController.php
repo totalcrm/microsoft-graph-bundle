@@ -2,8 +2,7 @@
 
 namespace TotalCRM\MicrosoftGraph\Controller;
 
-use DateTime;
-use Exception;
+use TotalCRM\MicrosoftGraph\DependencyInjection\MicrosoftGraphClient;
 use Microsoft\Graph\Graph;
 use Microsoft\Graph\Model;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -11,7 +10,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
-use TotalCRM\MicrosoftGraph\DependencyInjection\MicrosoftGraphClient;
+use DateTime;
+use Exception;
 
 /**
  * Class DefaultController
@@ -44,8 +44,8 @@ class DefaultController extends Controller
 
         $newEvent = new Model\Event();
 
-        $start = $calendar->getDateTimeTimeZone(new \DateTime('Now next minute'));
-        $end = $calendar->getDateTimeTimeZone(new \DateTime('Now next hour'));
+        $start = $calendar->getDateTimeTimeZone(new DateTime('Now next minute'));
+        $end = $calendar->getDateTimeTimeZone(new DateTime('Now next hour'));
         $newEvent->setSubject('Controller Test Token');
         $newEvent->setStart($start);
         $newEvent->setEnd($end);
@@ -88,8 +88,6 @@ class DefaultController extends Controller
             return new RedirectResponse($this->generateUrl($homePage));
 
         } catch (IdentityProviderException $e) {
-            // something went wrong!
-            // probably you should return the reason to the user
             var_dump($e->getMessage());
             die;
         }

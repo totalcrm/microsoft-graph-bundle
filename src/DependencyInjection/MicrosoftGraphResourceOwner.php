@@ -5,32 +5,25 @@ namespace TotalCRM\MicrosoftGraph\DependencyInjection;
 use League\OAuth2\Client\Provider\ResourceOwnerInterface;
 use League\OAuth2\Client\Token\token;
 
+/**
+ * Class MicrosoftGraphResourceOwner
+ * @package TotalCRM\MicrosoftGraph\DependencyInjection
+ */
 class MicrosoftGraphResourceOwner implements ResourceOwnerInterface
 {
-    /**
-     * Raw response
-     *
-     * @var array
-     */
-    protected $response;
-
+    protected array $response;
 
     /**
-     * Creates new resource owner.
-     *
+     * MicrosoftGraphResourceOwner constructor.
      * @param array $response
      * @param $resourceOwnerId
      */
     public function __construct(array $response, $resourceOwnerId)
     {
         $this->response = $response;
-
     }
 
-
     /**
-     * Get user id
-     *
      * @return string|null
      */
     public function getId()
@@ -39,8 +32,6 @@ class MicrosoftGraphResourceOwner implements ResourceOwnerInterface
     }
 
     /**
-     * Get user email
-     *
      * @return string|null
      */
     public function getEmail()
@@ -49,8 +40,6 @@ class MicrosoftGraphResourceOwner implements ResourceOwnerInterface
     }
 
     /**
-     * Get user firstname
-     *
      * @return string|null
      */
     public function getFirstname()
@@ -59,8 +48,6 @@ class MicrosoftGraphResourceOwner implements ResourceOwnerInterface
     }
 
     /**
-     * Get user lastname
-     *
      * @return string|null
      */
     public function getLastname()
@@ -69,8 +56,6 @@ class MicrosoftGraphResourceOwner implements ResourceOwnerInterface
     }
 
     /**
-     * Get user name
-     *
      * @return string|null
      */
     public function getName()
@@ -78,10 +63,7 @@ class MicrosoftGraphResourceOwner implements ResourceOwnerInterface
         return $this->response['name'] ?: null;
     }
 
-
     /**
-     * Return all of the owner details available as an array.
-     *
      * @return array
      */
     public function toArray()

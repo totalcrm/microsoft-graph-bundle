@@ -13,6 +13,11 @@ use Symfony\Component\HttpKernel\DependencyInjection\Extension;
  */
 class MicrosoftGraphExtension extends Extension
 {
+    /**
+     * @param array $configs
+     * @param ContainerBuilder $container
+     * @throws \Exception
+     */
     public function load(array $configs, ContainerBuilder $container)
     {
         $configuration = new Configuration();

@@ -12,13 +12,13 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
 class Configuration implements ConfigurationInterface
 {
     /**
-     * {@inheritdoc}
+     * @return TreeBuilder
      */
     public function getConfigTreeBuilder()
     {
 
-        $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('microsoft_graph');
+        $treeBuilder = new TreeBuilder('microsoft_graph');
+        $rootNode = $treeBuilder->getRootNode();
         $rootNode
             ->children()
             ->scalarNode('client_id')->end()
@@ -32,6 +32,7 @@ class Configuration implements ConfigurationInterface
             ->variableNode('scopes')->end()
             ->end()
             ->end();
+
         return $treeBuilder;
     }
 }

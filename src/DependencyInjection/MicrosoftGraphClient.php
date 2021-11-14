@@ -2,18 +2,18 @@
 
 namespace TotalCRM\MicrosoftGraph\DependencyInjection;
 
-use Exception;
+use TotalCRM\MicrosoftGraph\Exception\RedirectException;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use League\OAuth2\Client\Provider\AbstractProvider;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use League\OAuth2\Client\Provider\ResourceOwnerInterface;
 use League\OAuth2\Client\Token\AccessToken;
 use RuntimeException;
-use Symfony\Component\DependencyInjection\ContainerInterface as Container;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use TotalCRM\MicrosoftGraph\Exception\RedirectException;
+use Exception;
 
 /**
  * Class MicrosoftGraphClient
@@ -36,12 +36,13 @@ class MicrosoftGraphClient
      * @param RequestStack $requestStack
      * @param Container $container
      */
-    public function __construct(RequestStack $requestStack, Container $container)
+    public function __construct(RequestStack $requestStack, ContainerInterface $container)
     {
         $this->requestStack = $requestStack;
         $this->config = $container->getParameter('microsoft_graph');
         $this->storageManager = $container->get($this->config['storage_manager']);
         $this->router = $container->get('router');
+
         $options = [
             'clientId' => $this->config['client_id'],
             'clientSecret' => $this->config['client_secret'],
@@ -51,9 +52,7 @@ class MicrosoftGraphClient
             "urlAuthorize" => self::AUTHORITY_URL . '/oauth2/v2.0/authorize',
 
         ];
-
         $this->isStateless = $this->config['stateless'];
-
         $this->provider = new MicrosoftGraphProvider($options);
     }
 
@@ -66,10 +65,12 @@ class MicrosoftGraphClient
         return $this->config;
     }
 
+    /**
+     * @return $this
+     */
     public function setAsStateless(): self
     {
         $this->isStateless = true;
-
         return $this;
     }
 
@@ -98,7 +99,6 @@ class MicrosoftGraphClient
 
     /**
      * Call this after the user is redirected back to get the access token.
-     *
      * @return AccessToken
      * @throws Exception
      */
@@ -155,7 +155,6 @@ class MicrosoftGraphClient
 
     /**
      * Returns the underlying OAuth2 provider.
-     *
      * @return AbstractProvider
      */
     public function getOAuth2Provider(): AbstractProvider
