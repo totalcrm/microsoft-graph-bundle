@@ -1,0 +1,25 @@
+{
+    "name": "totalcrm/microsoft_graph_bundle",
+    "type": "symfony-bundle",
+    "description": "Symfony bundle for API Micrososft",
+    "keywords": ["Symfony", "security", "encoder"],
+    "homepage": "https://github.com/totalcrm/microsoft_graph_bundle",
+    "license": "MIT",
+    "authors": [{
+        "name": "Romanenko Aleksandr",
+        "email": "romanenko.a.a@outlook.com"
+    }],
+    "version": "dev-master",
+    "require": {
+        "php": ">=7.4.0",
+        "guzzlehttp/guzzle": "6.2.*",
+        "league/oauth2-client": "^2.2",
+        "microsoft/microsoft-graph": "0.1.*"
+
+    },
+    "autoload": {
+        "psr-4": {
+            "TotalCRM\\MicrosoftGraph\\": "src/"
+        }
+    }
+}
