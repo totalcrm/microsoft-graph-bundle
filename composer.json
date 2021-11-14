@@ -12,9 +12,9 @@
     "version": "dev-master",
     "require": {
         "php": ">=7.4.0",
-        "guzzlehttp/guzzle": "6.2.*",
+        "guzzlehttp/guzzle": "^6.3",
         "league/oauth2-client": "^2.2",
-        "microsoft/microsoft-graph": "0.1.*"
+        "microsoft/microsoft-graph": "1.44.*"
 
     },
     "autoload": {
