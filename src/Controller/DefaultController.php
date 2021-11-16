@@ -3,13 +3,14 @@
 namespace TotalCRM\MicrosoftGraph\Controller;
 
 use TotalCRM\MicrosoftGraph\DependencyInjection\MicrosoftGraphClient;
-use Microsoft\Graph\Graph;
-use Microsoft\Graph\Model;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Microsoft\Graph\Graph;
+use Microsoft\Graph\Model;
 use DateTime;
 use Exception;
 
@@ -17,7 +18,7 @@ use Exception;
  * Class DefaultController
  * @package TotalCRM\MicrosoftGraph\Controller
  */
-class DefaultController extends Controller
+class DefaultController extends AbstractController
 {
 
     /**
