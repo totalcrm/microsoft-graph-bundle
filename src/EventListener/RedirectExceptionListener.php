@@ -2,7 +2,7 @@
 
 namespace TotalCRM\MicrosoftGraph\EventListener;
 
-use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
+use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use TotalCRM\MicrosoftGraph\Exception\RedirectException;
 
 /**
@@ -11,9 +11,12 @@ use TotalCRM\MicrosoftGraph\Exception\RedirectException;
  */
 class RedirectExceptionListener
 {
-    public function onKernelException(GetResponseForExceptionEvent $event)
+    /**
+     * @param ExceptionEvent $event
+     */
+    public function onKernelException(ExceptionEvent $event): void
     {
-        if ($event->getException() instanceof RedirectException) {
+        if ($event instanceof RedirectException) {
             $event->setResponse($event->getException()->getRedirectResponse());
         }
     }

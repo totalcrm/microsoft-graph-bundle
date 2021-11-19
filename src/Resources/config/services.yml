@@ -1,21 +1,31 @@
 services:
     microsoft_graph.client:
+        public: true
         class: TotalCRM\MicrosoftGraph\DependencyInjection\MicrosoftGraphClient
-        arguments: ['@request_stack', '@service_container']
+        arguments: ['@service_container']
 
     microsoft_graph.request:
+        public: true
         class: TotalCRM\MicrosoftGraph\DependencyInjection\MicrosoftGraphRequest
         arguments: ["@microsoft_graph.client"]
 
-    microsoft_graph.calendar:
-        class: TotalCRM\MicrosoftGraph\Service\Calendar
+    microsoft_graph.contact_manager:
+        public: true
+        class: TotalCRM\MicrosoftGraph\Manager\ContactManager
+        arguments: ["@microsoft_graph.request"]
+
+    microsoft_graph.calendar_manager:
+        public: true
+        class: TotalCRM\MicrosoftGraph\Manager\CalendarManager
         arguments: ["@microsoft_graph.request"]
 
     microsoft_graph.redirect_exception_listener:
+        public: true
         class: TotalCRM\MicrosoftGraph\EventListener\RedirectExceptionListener
         tags:
             - { name: kernel.event_listener, event: kernel.exception }
 
     microsoft_graph.session_storage:
+        public: true
         class: TotalCRM\MicrosoftGraph\Token\SessionStorage
-        arguments: ["@session", '@service_container']
+        arguments: ['@service_container']

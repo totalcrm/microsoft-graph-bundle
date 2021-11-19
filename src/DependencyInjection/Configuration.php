@@ -11,12 +11,12 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
  */
 class Configuration implements ConfigurationInterface
 {
+
     /**
      * @return TreeBuilder
      */
-    public function getConfigTreeBuilder()
+    public function getConfigTreeBuilder(): TreeBuilder
     {
-
         $treeBuilder = new TreeBuilder('microsoft_graph');
         $rootNode = $treeBuilder->getRootNode();
         $rootNode
@@ -29,9 +29,11 @@ class Configuration implements ConfigurationInterface
             ->scalarNode('version')->end()
             ->scalarNode('storage_manager')->end()
             ->scalarNode('stateless')->end()
+            ->scalarNode('contact_folder')->end()
             ->variableNode('scopes')->end()
             ->end()
-            ->end();
+            ->end()
+        ;
 
         return $treeBuilder;
     }

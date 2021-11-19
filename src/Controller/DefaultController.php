@@ -31,6 +31,7 @@ class DefaultController extends AbstractController
         $client = $this->get('microsoft_graph.client');
         $session = $this->get('session');
 
+        /*
         try {
             $client->getNewToken();
         } catch (Exception $ex) {
@@ -61,11 +62,12 @@ class DefaultController extends AbstractController
 
         $session->set('microsoft_graph_expires', time() - 51);
         return $this->render('TotalCRMMicrosoftGraph:Default:index.html.twig');
+        */
     }
 
     public function connectAction()
     {
-        return $this->get('microsoft_graph.client')->setAsStateless()->redirect();
+        return $this->get('microsoft_graph.client')->redirect();
     }
 
     /**
@@ -76,21 +78,15 @@ class DefaultController extends AbstractController
      * @return RedirectResponse
      * @throws Exception
      */
-    public function connectCheckAction(Request $request): ?RedirectResponse
+    public function connectCheckAction(Request $request): RedirectResponse
     {
-        try {
-            /** @var MicrosoftGraphClient $client */
-            $client = $this->get('microsoft_graph.client');
-            $token = $client->getAccessToken();
-            $tokenStorage = $this->get("microsoft_graph.session_storage");
-            $tokenStorage->setToken($token);
-            $homePage = $this->getParameter("microsoft_graph")["home_page"];
+        /** @var MicrosoftGraphClient $client */
+        $client = $this->get('microsoft_graph.client');
+        $token = $client->getAccessToken();
+        $tokenStorage = $this->get("microsoft_graph.session_storage");
+        $tokenStorage->setToken($token);
+        $homePage = $this->getParameter("microsoft_graph")["home_page"];
 
-            return new RedirectResponse($this->generateUrl($homePage));
-
-        } catch (IdentityProviderException $e) {
-            var_dump($e->getMessage());
-            die;
-        }
+        return new RedirectResponse($this->generateUrl($homePage));
     }
 }

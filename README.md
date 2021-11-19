@@ -14,16 +14,16 @@ $ composer require 'totalcrm/microsoft_graph_bundle'
 
 You have to configure your api:
 ``` yml
-    microsoft_graph:
-        client_id: "%client_id%"
-        client_secret: "%client_secret%"
-        redirect_uri: "name of your redirect route"
-        time_zone: "" # your prefered timezone default UTC
-        version: "" version of API GRAPH: #1.0 or beta,  deafault 1.0
-        stateless: true # if false, the state will stored in session
-        scopes:  # for more details https://developer.microsoft.com/en-us/graph/docs/authorization/permission_scopes
-            - openid
-            - offline_access
+microsoft_graph:
+    client_id: "%env(MS_GRAPH_CLIENT_ID)%" 
+    client_secret: "%env(MS_GRAPH_CLIENT_SECRET)%"
+    redirect_uri: "name of your redirect route"
+    prefer_time_zone: "%env(TIMEZONE_UTC)%" # your prefered timezone default UTC
+    version: "1.0" #version of API GRAPH: #1.0 or beta,  default 1.0
+    stateless: true # if false, the state will stored in session
+    scopes:  # for more details https://developer.microsoft.com/en-us/graph/docs/authorization/permission_scopes
+        - openid
+        - offline_access
             #- ...
             
 ```

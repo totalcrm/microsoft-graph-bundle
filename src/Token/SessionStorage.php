@@ -3,9 +3,8 @@
 namespace TotalCRM\MicrosoftGraph\Token;
 
 use League\OAuth2\Client\Token\AccessToken;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\Session\Session;
 
 /**
  * Class SessionStorage
@@ -13,18 +12,26 @@ use Symfony\Component\HttpFoundation\Session\Session;
  */
 class SessionStorage implements TokenStorageInterface
 {
-    private ContainerInterface $container;
-    private Session $session;
+    //private ContainerInterface $container;
+    private FilesystemAdapter $cacheAdapter;
+
+    private int $expires;
+    private string $cacheKey;
+    //private string $cacheDirectory;
 
     /**
      * SessionStorage constructor.
-     * @param Session $session
      * @param ContainerInterface $container
      */
-    public function __construct(Session $session, ContainerInterface $container)
+    public function __construct(ContainerInterface $container)
     {
-        $this->session = $session;
-        $this->container = $container;
+        //$this->container = $container;
+
+        $this->expires = 525600; //1 year
+        $this->cacheKey = 'microsoft_graph';
+        $cacheDirectory = $container->getParameter('kernel.project_dir') . '/cacheAdapter';
+
+        $this->cacheAdapter = new FilesystemAdapter('app.cache.microsoft_graph', $this->expires, $cacheDirectory);
     }
 
     /**
@@ -33,10 +40,17 @@ class SessionStorage implements TokenStorageInterface
      */
     public function setToken(AccessToken $token): void
     {
-        $this->session->set('microsoft_graph_accesstoken', $token->getToken());
-        $this->session->set('microsoft_graph_refreshtoken', $token->getRefreshToken());
-        $this->session->set('microsoft_graph_expires', $token->getExpires());
-        $this->session->set('microsoft_graph_resourceOwnerId', $token->getResourceOwnerId());
+        $options = [
+            'access_token' => $token->getToken(),
+            'refresh_token' => $token->getRefreshToken(),
+            'expires' => $token->getExpires(),
+            'resource_owner_id' => $token->getResourceOwnerId(),
+        ];
+
+        $cacheItem = $this->cacheAdapter->getItem($this->cacheKey);
+        $cacheItem->expiresAfter($this->expires)->set($options);
+        $this->cacheAdapter->save($cacheItem);
+
     }
 
     /**
@@ -44,10 +58,11 @@ class SessionStorage implements TokenStorageInterface
      */
     public function getToken(): AccessToken
     {
-        $options['access_token'] = $this->session->get('microsoft_graph_accesstoken');
-        $options['refresh_token'] = $this->session->get('microsoft_graph_refreshtoken');
-        $options['expires'] = $this->session->get('microsoft_graph_expires');
-        $options['resource_owner_id'] = $this->session->get('microsoft_graph_resourceOwnerId');
+        $options = [];
+        $cacheItem = $this->cacheAdapter->getItem($this->cacheKey);
+        if ($cacheItem && $cacheItem->isHit()) {
+            $options = $cacheItem->get();
+        }
 
         return new AccessToken($options);
     }

@@ -21,6 +21,10 @@
         "guzzlehttp/guzzle": "^6.3 || ^7.0 ",
         "league/oauth2-client": "^2.2",
         "microsoft/microsoft-graph": "1.44.*"
+    }
+    ,
+    "require-dev": {
+        "roave/security-advisories": "dev-latest"
     },
     "autoload": {
         "psr-4": {

@@ -2,7 +2,7 @@
 
 namespace TotalCRM\MicrosoftGraph\DependencyInjection;
 
-use TotalCRM\MicrosoftGraph\DependencyInjection\MicrosoftGraphResourceOwner as User;
+use TotalCRM\MicrosoftGraph\DependencyInjection\MicrosoftGraphResourceOwner;
 use League\OAuth2\Client\Provider\AbstractProvider;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use League\OAuth2\Client\Provider\GenericProvider;
@@ -21,10 +21,14 @@ class MicrosoftGraphProvider extends GenericProvider
 
     /**
      * MicrosoftGraphProvider constructor.
-     * @param array $options
+     * @param array|null $options
      */
-    public function __construct(array $options = [])
+    public function __construct(?array $options = null)
     {
+        if (!$options) {
+            $options = [];
+        }
+
         parent::__construct($options);
     }
 
@@ -33,9 +37,9 @@ class MicrosoftGraphProvider extends GenericProvider
      * @param AccessToken $token
      * @return MicrosoftGraphResourceOwner
      */
-    protected function createResourceOwner(array $response, AccessToken $token): User
+    protected function createResourceOwner(array $response, AccessToken $token): MicrosoftGraphResourceOwner
     {
-        return new User($response, self::ACCESS_TOKEN_RESOURCE_OWNER_ID);
+        return new MicrosoftGraphResourceOwner($response, self::ACCESS_TOKEN_RESOURCE_OWNER_ID);
     }
 
 }

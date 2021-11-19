@@ -2,10 +2,14 @@
 
 namespace TotalCRM\MicrosoftGraph\DependencyInjection;
 
+use TotalCRM\MicrosoftGraph\DependencyInjection\MicrosoftGraphClient;
+
+use Microsoft\Graph\Http\GraphCollectionRequest;
+use Microsoft\Graph\Http\GraphRequest;
 use Microsoft\Graph\Graph;
 use Microsoft\Graph\Model;
-use Microsoft\Graph\Model\DateTimeTimeZone;
 use DateTime;
+use Exception;
 
 /**
  * Class MicrosoftGraphRequest
@@ -13,9 +17,8 @@ use DateTime;
  */
 class MicrosoftGraphRequest
 {
-    private $client;
-    private $graph;
-    private $request;
+    private MicrosoftGraphClient $client;
+    private Graph $graph;
 
     /**
      * MicrosoftGraphRequest constructor.
@@ -30,7 +33,7 @@ class MicrosoftGraphRequest
     /**
      * @param string $version
      */
-    public function setVersion($version = "")
+    public function setVersion($version = ""): void
     {
         if (in_array($version, ['v1.0', 'beta'])) {
             $this->graph->setApiVersion($version);
@@ -44,7 +47,7 @@ class MicrosoftGraphRequest
 
     /**
      * @return mixed|string
-     * @throws \Exception
+     * @throws Exception
      */
     public function getToken()
     {
@@ -52,9 +55,9 @@ class MicrosoftGraphRequest
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
-    public function setTokenGraph()
+    public function setTokenGraph(): void
     {
         $this->graph->setAccessToken($this->getToken());
     }
@@ -71,7 +74,7 @@ class MicrosoftGraphRequest
     /**
      * @return string
      */
-    public function getPreferTimeZone()
+    public function getPreferTimeZone(): string
     {
         return 'outlook.timezone="' . $this->getConfig('prefer_time_zone') . '"';
     }
@@ -80,10 +83,10 @@ class MicrosoftGraphRequest
      * @param $requestType
      * @param $endpoint
      * @param bool $preferedTimeZone
-     * @return \Microsoft\Graph\Http\GraphRequest
-     * @throws \Microsoft\Graph\Exception\GraphException
+     * @return GraphRequest
+     * @throws Exception
      */
-    public function createRequest($requestType, $endpoint, $preferedTimeZone = False)
+    public function createRequest($requestType, $endpoint, $preferedTimeZone = false): GraphRequest
     {
         $this->setTokenGraph();
         $request = $this->graph->createRequest($requestType, $endpoint);
@@ -98,17 +101,17 @@ class MicrosoftGraphRequest
      * @param $requestType
      * @param $endpoint
      * @param bool $preferedTimeZone
-     * @return \Microsoft\Graph\Http\GraphCollectionRequest
-     * @throws \Microsoft\Graph\Exception\GraphException
+     * @return GraphCollectionRequest
+     * @throws Exception
      */
-    public function createCollectionRequest($requestType, $endpoint, $preferedTimeZone = False)
+    public function createCollectionRequest($requestType, $endpoint, $preferedTimeZone = false): GraphCollectionRequest
     {
         $this->setTokenGraph();
         $createCollectionRequest = $this->graph->createCollectionRequest($requestType, $endpoint);
         if ($preferedTimeZone) {
             $createCollectionRequest->addHeaders(["Prefer" => $this->getPreferTimeZone()]);
         }
-
+                
         return $createCollectionRequest;
     }
 
@@ -124,13 +127,13 @@ class MicrosoftGraphRequest
 
     /**
      * @param DateTime $date
-     * @return DateTimeTimeZone
+     * @return Model\DateTimeTimeZone
      */
-    public function getDateTimeTimeZone(DateTime $date): DateTimeTimeZone
+    public function getDateTimeTimeZone(DateTime $date): Model\DateTimeTimeZone
     {
         $dateTime = $this->getDateMicrosoftFormat($date);
         $timezone = $this->getConfig('prefer_time_zone');
 
-        return new DateTimeTimeZone(['dateTime' => $dateTime, 'timezone' => $timezone]);
+        return new Model\DateTimeTimeZone(['dateTime' => $dateTime, 'timezone' => $timezone]);
     }
 }

@@ -2,8 +2,8 @@
 
 namespace TotalCRM\MicrosoftGraph\Exception;
 
-use Exception;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Exception;
 
 /**
  * Class RedirectException
@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
  */
 class RedirectException extends Exception
 {
-    private $redirectResponse;
+    private RedirectResponse $redirectResponse;
 
     /**
      * RedirectException constructor.
@@ -29,7 +29,7 @@ class RedirectException extends Exception
     /**
      * @return RedirectResponse
      */
-    public function getRedirectResponse()
+    public function getRedirectResponse(): RedirectResponse
     {
         return $this->redirectResponse;
     }

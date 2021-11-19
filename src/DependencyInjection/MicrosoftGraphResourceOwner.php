@@ -26,7 +26,7 @@ class MicrosoftGraphResourceOwner implements ResourceOwnerInterface
     /**
      * @return string|null
      */
-    public function getId()
+    public function getId(): ?string
     {
         return $this->response['id'] ?: null;
     }
@@ -34,7 +34,7 @@ class MicrosoftGraphResourceOwner implements ResourceOwnerInterface
     /**
      * @return string|null
      */
-    public function getEmail()
+    public function getEmail(): ?string
     {
         return $this->response['mail'] ?: null;
     }
@@ -42,7 +42,7 @@ class MicrosoftGraphResourceOwner implements ResourceOwnerInterface
     /**
      * @return string|null
      */
-    public function getFirstname()
+    public function getFirstname(): ?string
     {
         return $this->response['givenName'] ?: null;
     }
@@ -50,7 +50,7 @@ class MicrosoftGraphResourceOwner implements ResourceOwnerInterface
     /**
      * @return string|null
      */
-    public function getLastname()
+    public function getLastname(): ?string
     {
         return $this->response['surname'] ?: null;
     }
@@ -58,7 +58,7 @@ class MicrosoftGraphResourceOwner implements ResourceOwnerInterface
     /**
      * @return string|null
      */
-    public function getName()
+    public function getName(): ?string
     {
         return $this->response['name'] ?: null;
     }
@@ -66,7 +66,7 @@ class MicrosoftGraphResourceOwner implements ResourceOwnerInterface
     /**
      * @return array
      */
-    public function toArray()
+    public function toArray(): array
     {
         return $this->response;
     }

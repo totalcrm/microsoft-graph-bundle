@@ -9,7 +9,7 @@ interface TokenStorageInterface
     /**
      * @return AccessToken
      */
-    public function getToken();
+    public function getToken(): AccessToken;
 
     /**
      * @param AccessToken $token

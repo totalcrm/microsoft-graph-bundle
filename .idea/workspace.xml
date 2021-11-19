@@ -10,23 +10,23 @@
       <change beforePath="$PROJECT_DIR$/src/DependencyInjection/MicrosoftGraphProvider.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/DependencyInjection/MicrosoftGraphProvider.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/DependencyInjection/MicrosoftGraphRequest.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/DependencyInjection/MicrosoftGraphRequest.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/DependencyInjection/MicrosoftGraphResourceOwner.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/DependencyInjection/MicrosoftGraphResourceOwner.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/MicrosoftGraphTokenInterface.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/MicrosoftGraphTokenInterface.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/EventListener/RedirectExceptionListener.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/EventListener/RedirectExceptionListener.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Exception/RedirectException.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Exception/RedirectException.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Resources/Entity/MicrosoftGraphTokenInterface.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Resources/Entity/MicrosoftGraphTokenInterface.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Resources/config/routing.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/Resources/config/routing.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Resources/config/services.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/Resources/config/services.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Resources/views/Default/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/src/Resources/views/Default/index.html.twig" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Service/Calendar.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Service/Calendar.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Token/SessionStorage.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Token/SessionStorage.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Token/TokenStorageInterface.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Token/TokenStorageInterface.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/TotalCRMMicrosoftGraph.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/TotalCRMMicrosoftGraph.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/TotalCRMMicrosoftGraphBundle.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/TotalCRMMicrosoftGraphBundle.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="ComposerSettings" synchronizationState="SYNCHRONIZE">
+  <component name="ComposerSettings" doNotAsk="true" synchronizationState="SYNCHRONIZE">
     <pharConfigPath>$PROJECT_DIR$/composer.json</pharConfigPath>
     <execution>
       <executable />
@@ -46,6 +46,11 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
   </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="Z:\home\romanenko_a\projects\totalcrm_packagist\microsoft_graph_bundle\src" />
+    </key>
+  </component>
   <component name="SvnConfiguration">
     <configuration />
   </component>
@@ -57,6 +62,7 @@
       <option name="presentableId" value="Default" />
       <updated>1636894032762</updated>
       <workItem from="1636894034032" duration="2144000" />
+      <workItem from="1637043684681" duration="4474000" />
     </task>
     <servers />
   </component>
@@ -64,21 +70,25 @@
     <option name="version" value="1" />
   </component>
   <component name="WindowStateProjectService">
+    <state x="2610" y="280" key="#com.jetbrains.php.actions.copyPaste.importReferences.PhpImportReferencesDialog" timestamp="1637043958011">
+      <screen x="1920" y="0" width="1920" height="1050" />
+    </state>
+    <state x="2610" y="280" key="#com.jetbrains.php.actions.copyPaste.importReferences.PhpImportReferencesDialog/0.0.1920.1050/1920.0.1920.1050@1920.0.1920.1050" timestamp="1637043958011" />
     <state x="2660" y="451" key="#com.jetbrains.php.lang.intentions.PhpImportClassDialog#" timestamp="1636895854072">
       <screen x="1920" y="0" width="1920" height="1050" />
     </state>
     <state x="2660" y="451" key="#com.jetbrains.php.lang.intentions.PhpImportClassDialog#/0.0.1920.1050/1920.0.1920.1050@1920.0.1920.1050" timestamp="1636895854072" />
-    <state x="2638" y="387" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1" timestamp="1636895719393">
+    <state x="2638" y="387" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1" timestamp="1637311662403">
       <screen x="1920" y="0" width="1920" height="1050" />
     </state>
-    <state x="2638" y="387" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/0.0.1920.1050/1920.0.1920.1050@1920.0.1920.1050" timestamp="1636895719393" />
+    <state x="2638" y="387" key="ANALYSIS_DLG_com.intellij.analysis.BaseAnalysisAction$1/0.0.1920.1050/1920.0.1920.1050@1920.0.1920.1050" timestamp="1637311662403" />
     <state x="2670" y="257" key="FileChooserDialogImpl" timestamp="1636895440286">
       <screen x="1920" y="0" width="1920" height="1050" />
     </state>
     <state x="2670" y="257" key="FileChooserDialogImpl/0.0.1920.1050/1920.0.1920.1050@1920.0.1920.1050" timestamp="1636895440286" />
-    <state x="2040" y="31" width="1701" height="943" key="find.popup" timestamp="1636895461781">
+    <state x="2040" y="31" width="1701" height="943" key="find.popup" timestamp="1637049446066">
       <screen x="1920" y="0" width="1920" height="1050" />
     </state>
-    <state x="2040" y="31" width="1701" height="943" key="find.popup/0.0.1920.1050/1920.0.1920.1050@1920.0.1920.1050" timestamp="1636895461781" />
+    <state x="2040" y="31" width="1701" height="943" key="find.popup/0.0.1920.1050/1920.0.1920.1050@1920.0.1920.1050" timestamp="1637049446066" />
   </component>
 </project>

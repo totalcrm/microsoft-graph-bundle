@@ -2,12 +2,14 @@
 
 namespace TotalCRM\MicrosoftGraph\DependencyInjection;
 
+use TotalCRM\MicrosoftGraph\Token\SessionStorage;
 use TotalCRM\MicrosoftGraph\Exception\RedirectException;
+
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
+
 use League\OAuth2\Client\Provider\AbstractProvider;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use League\OAuth2\Client\Provider\ResourceOwnerInterface;
@@ -21,39 +23,52 @@ use Exception;
  */
 class MicrosoftGraphClient
 {
-    public const OAUTH2_SESSION_STATE_KEY = 'microsoft_graph_client_state';
-    public const AUTHORITY_URL = 'https://login.microsoftonline.com/common';
+    public const AUTHORITY_URL = 'https://login.microsoftonline.com/6b948520-d8da-4240-9a4a-cc6bc4ecb14c';
     public const RESOURCE_ID = 'https://graph.microsoft.com';
-    private AbstractProvider $provider;
-    private RequestStack $requestStack;
-    private bool $isStateless = false;
-    private $config;
-    private $router;
+    private MicrosoftGraphProvider $provider;
+    private ?OutputInterface $output;
+    private array $config;
+    //private $router;
     private $storageManager;
+
+    private $expires;
+    private string $cacheDirectory;
 
     /**
      * MicrosoftGraphClient constructor.
-     * @param RequestStack $requestStack
-     * @param Container $container
+     * @param ContainerInterface $container
      */
-    public function __construct(RequestStack $requestStack, ContainerInterface $container)
+    public function __construct(ContainerInterface $container)
     {
-        $this->requestStack = $requestStack;
         $this->config = $container->getParameter('microsoft_graph');
         $this->storageManager = $container->get($this->config['storage_manager']);
-        $this->router = $container->get('router');
+        //$this->router = $container->get('router');
 
+        $this->expires = 1000 * 600 * 6;
+        $this->cacheDirectory = $container->getParameter('kernel.project_dir') . '/cacheAdapter';
+        
         $options = [
             'clientId' => $this->config['client_id'],
             'clientSecret' => $this->config['client_secret'],
-            'redirectUri' => "http://localhost:8000" . $container->get('router')->generate($this->config['redirect_uri']),
+            //'redirectUri' => "http://localhost:8000" . $container->get('router')->generate($this->config['redirect_uri']),
+            'redirectUri' => "https://localhost/microsoft-graph/auth",
             'urlResourceOwnerDetails' => self::RESOURCE_ID . "/v1.0/me",
             "urlAccessToken" => self::AUTHORITY_URL . '/oauth2/v2.0/token',
             "urlAuthorize" => self::AUTHORITY_URL . '/oauth2/v2.0/authorize',
-
         ];
-        $this->isStateless = $this->config['stateless'];
+        
         $this->provider = new MicrosoftGraphProvider($options);
+    }
+
+    /**
+     * @param $code
+     */
+    public function setAuthorizationCode($code): void
+    {
+        $token = $this->provider->getAccessToken('authorization_code', [
+            'code' => $code,
+        ]);
+        $this->storageManager->setToken($token);
     }
 
     /**
@@ -66,20 +81,12 @@ class MicrosoftGraphClient
     }
 
     /**
-     * @return $this
-     */
-    public function setAsStateless(): self
-    {
-        $this->isStateless = true;
-        return $this;
-    }
-
-    /**
      * Creates a RedirectResponse that will send the user to the OAuth2 server (e.g. send them to Facebook).
+     * @param OutputInterface|null $output
      * @return void
      * @throws RedirectException
      */
-    public function redirect(): void
+    public function redirect(?OutputInterface $output = null): void
     {
         $options = [];
         $scopes = $this->config["scopes"];
@@ -87,14 +94,17 @@ class MicrosoftGraphClient
             $options['scope'] = implode(" ", $scopes);
         }
         $url = $this->provider->getAuthorizationUrl($options);
-        if (!$this->isStateless) {
-            $this->getSession()->set(
-                self::OAUTH2_SESSION_STATE_KEY,
-                $this->provider->getState()
-            );
+
+        if ($output instanceof OutputInterface) {
+            $output->writeln('<info>####################################################################</info>');
+            $output->writeln('<info>Log in using the specified link</info>');
+            $output->writeln('<info>'.$url.'</info>');
+            $output->writeln('<info>####################################################################</info>');
+            
+            return;
         }
 
-        throw  new RedirectException(new RedirectResponse($url));
+        throw new RedirectException(new RedirectResponse($url));
     }
 
     /**
@@ -104,20 +114,19 @@ class MicrosoftGraphClient
      */
     public function getAccessToken(): AccessToken
     {
-        if (!$this->isStateless) {
-            $expectedState = $this->getSession()->get(self::OAUTH2_SESSION_STATE_KEY);
-            $actualState = $this->getCurrentRequest()->query->get('state');
-            if (!$actualState || ($actualState !== $expectedState)) {
-                throw new RuntimeException('Invalid state');
-            }
-        }
-        $code = $this->getCurrentRequest()->get('code');
-        if (!$code) {
-            throw new RuntimeException('No "code" parameter was found (usually this is a query parameter)!');
+
+        /** @var FilesystemAdapter $cache */
+        $cache = new FilesystemAdapter('app.cache.authorization_code', $this->expires, $this->cacheDirectory);
+        $cacheKey = 'authorization_code';
+        $authorizationCode = null;
+
+        $cacheItem = $cache->getItem($cacheKey);
+        if ($cacheItem && $cacheItem->isHit()) {
+            $authorizationCode = $cacheItem->get();
         }
 
         $token = $this->provider->getAccessToken('authorization_code', [
-            'code' => $code,
+            'code' => $authorizationCode,
         ]);
 
         $this->storageManager->setToken($token);
@@ -155,9 +164,9 @@ class MicrosoftGraphClient
 
     /**
      * Returns the underlying OAuth2 provider.
-     * @return AbstractProvider
+     * @return MicrosoftGraphProvider
      */
-    public function getOAuth2Provider(): AbstractProvider
+    public function getOAuth2Provider(): MicrosoftGraphProvider
     {
         return $this->provider;
     }
@@ -168,7 +177,7 @@ class MicrosoftGraphClient
      */
     public function getNewToken(): AccessToken
     {
-        /** @var  $oldToken */
+        /** @var AccessToken $oldToken */
         $oldToken = $this->storageManager->getToken();
 
         if ($oldToken->hasExpired()) {
@@ -185,34 +194,5 @@ class MicrosoftGraphClient
 
         return $oldToken;
     }
-
-    /**
-     * @return Request
-     * @throws Exception
-     */
-    private function getCurrentRequest(): Request
-    {
-        $request = $this->requestStack->getCurrentRequest();
-        if (!$request) {
-            throw new RuntimeException('There is no "current request", and it is needed to perform this action');
-        }
-
-        return $request;
-    }
-
-    /**
-     * @return null|SessionInterface
-     * @throws Exception
-     */
-    private function getSession(): ?SessionInterface
-    {
-        $session = $this->getCurrentRequest()->getSession();
-        if (!$session) {
-            throw new RuntimeException('In order to use "state", you must have a session. Set the OAuth2Client to stateless to avoid state');
-        }
-
-        return $session;
-    }
-
 
 }
