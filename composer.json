@@ -5,10 +5,12 @@
     "keywords": ["Symfony", "security", "encoder"],
     "homepage": "https://github.com/totalcrm/microsoft_graph_bundle",
     "license": "MIT",
-    "authors": [{
-        "name": "Romanenko Aleksandr",
-        "email": "romanenko.a.a@outlook.com"
-    }],
+    "authors": [
+        {
+            "name": "Romanenko Aleksandr",
+            "email": "romanenko.a.a@outlook.com"
+        }
+    ],
     "version": "dev-master",
     "require": {
         "php": ">=7.4.0",
@@ -18,12 +20,11 @@
         "symfony/dependency-injection": "^4.4 || ^5.3 || ^6.0",
         "symfony/framework-bundle": "^4.4 || ^5.3 || ^6.0",
         "symfony/routing": "^4.4 || ^5.3 || ^6.0",
-        "symfony/filesystem": "^4.4 || ^5.3 || ^6.0",
+        "symfony/cache": "^4.4 || ^5.3 || ^6.0",
         "guzzlehttp/guzzle": "^6.3 || ^7.0 ",
         "league/oauth2-client": "^2.2",
         "microsoft/microsoft-graph": "1.44.*"
-    }
-    ,
+    },
     "require-dev": {
         "roave/security-advisories": "dev-latest"
     },

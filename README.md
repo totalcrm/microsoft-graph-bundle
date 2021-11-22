@@ -55,7 +55,7 @@ microsoft_graph:
         ...
 ```
 
-# Get  token from Office 365 | API Graph
+# Get token from Office 365 | API Graph
 ``` php
     /** @var MicrosoftGraphClient $graphClient */
     $graphClient = $container->get('microsoft_graph.client');
@@ -64,10 +64,41 @@ microsoft_graph:
         /* if you have a refresh token then  the token will refresh */
         $graphClient->getNewToken();
     } catch(\Exception $ex) {
-        /* return url by auth
-        $graphClient->redirect();
+        /* return url by Authorization */
+
+        $url = $graphClient->redirect();
+
+        /*
+        Follow the link $url and login in to Microsoft Office 365 Service
+        After successful authorization, you should be redirected to the redirect_uri page with the code parameter, which you need to save
+        See set token Office 365 auth and cached
+        */
     }
 ```
+# Set token Office 365 auth and cached
+``` php
+    /** @var MicrosoftGraphClient $graphClient */
+    $graphClient = $container->get('microsoft_graph.client');
+    $authorizationCode = "0.AQUAIIWUa9rYQEKaSsxrxOyxTP-AiocQKThAr3_TKz.......";
+
+    try {
+        $this->graphClient->setAuthorizationCode($authorizationCode);
+    } catch (\Exception $exception) {
+        if ($exception->getMessage() === 'invalid_grant') {
+            /*
+            OAuth2 Authorization code was already redeemed
+            Please retry with a new valid code or use an existing refresh token
+            */
+        } else {
+            /*
+            Authorization code save error
+            Please retry with a new valid code or use an existing refresh token
+            */
+        }
+    }
+
+```
+
 
 # Example get contacts in folder
 ``` php
