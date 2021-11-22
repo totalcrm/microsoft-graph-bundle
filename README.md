@@ -10,98 +10,171 @@ The recommended way to install the bundle is through Composer.
 $ composer require 'totalcrm/microsoft_graph_bundle'
 ```
 
-## Configuration 
+Symfony 3: add MicrosoftGraphBundle in AppKernel.php registerBundles()
+```php
+$bundles = [
+    ...,
+    New TotalCRM\MicrosoftGraph\MicrosoftGraphBundle(),
+];
+```
+Symfony 4 and up: add MicrosoftGraphBundle in bundles.php
+```php
+return [
+    ...,
+    TotalCRM\MicrosoftGraph\MicrosoftGraphBundle::class => ['all' => true],
+];
+```
 
-You have to configure your api:
+## Configuration 
+You have to configure your api.
+
+Symfony 3: add to config.yml
+ 
+Symfony 4 and up: create config/packages/microsoft_graph.yaml
 ``` yml
 microsoft_graph:
-    client_id: "%env(MS_GRAPH_CLIENT_ID)%" 
+    client_id: "%env(MS_GRAPH_CLIENT_ID)%"
     client_secret: "%env(MS_GRAPH_CLIENT_SECRET)%"
-    redirect_uri: "name of your redirect route"
-    prefer_time_zone: "%env(TIMEZONE_UTC)%" # your prefered timezone default UTC
-    version: "1.0" #version of API GRAPH: #1.0 or beta,  default 1.0
-    stateless: true # if false, the state will stored in session
-    scopes:  # for more details https://developer.microsoft.com/en-us/graph/docs/authorization/permission_scopes
+    tenant_id: "%env(MS_GRAPH_TENANT_ID)%"
+    contact_folder: "%env(MS_GRAPH_CONTACT_FOLDER)%"
+    storage_manager: "microsoft_graph.session_storage"
+    redirect_uri: "app_dashboard"
+    home_page: "app_dashboard"
+    prefer_time_zone: "%env(MS_GRAPH_TIMEZONE_UTC)%" 
+    version: "1.0"
+    scopes:  # see more details https://developer.microsoft.com/en-us/graph/docs/authorization/permission_scopes
         - openid
         - offline_access
-            #- ...
-            
+        - Contacts.Read
+        - Contacts.ReadWrite
+        - Contacts.ReadWrite.Shared
+        - Calendars.Read
+        - Calendars.Read.Shared
+        - Calendars.ReadWrite
+        - Tasks.ReadWrite
+        ...
 ```
 
 # Get  token from Office 365 | API Graph
 ``` php
-    // Get client service 
-    $client= $this->get('microsoft_graph.client');
-    try{
-        /*
-         if you have a refresh token then  the token will refresh 
-         */
-        $client->getNewToken();
+    /** @var MicrosoftGraphClient $graphClient */
+    $graphClient = $container->get('microsoft_graph.client');
 
-    }catch(\Exception $ex){
-        // else 
-        $client->redirect(); // redirect to office 365 authentication page
+    try {
+        /* if you have a refresh token then  the token will refresh */
+        $graphClient->getNewToken();
+    } catch(\Exception $ex) {
+        /* return url by auth
+        $graphClient->redirect();
     }
-
-
 ```
 
+# Example get contacts in folder
+``` php
+    /** @var MicrosoftGraphContactManager $contactManager */
+    $contactManager = $container->get('microsoft_graph.contact_manager');
+    
+    //Get Contacts by Folder
+    /** @var Microsoft\Graph\Model\Contact[] $folders */
+    $folders = $contactManager->getContactFolders();
+    dump($contacts);
+
+    foreach ($folders as $folder) {
+        /** @var Microsoft\Graph\Model\Contact[] $contacts */
+        $contacts = $contactManager->getContacts($folder->getId());
+        dump($contacts);
+    }
+
+    //Get All Contacts 
+    /** @var Microsoft\Graph\Model\Contact[] $contacts */
+    $contacts = $contactManager->getContacts();
+    dump($contacts);
+```
+
+# Example get contact by id
+``` php
+    $id = '...';
+    $contact = $contactManager->getContact($id);
+    dump($contacts);
+```
+ # Create an contact
+``` php
+
+    /** @var Microsoft\Graph\Model\PhysicalAddress $businessAddress */
+    $businessAddress = new Model\PhysicalAddress();
+    $businessAddress
+        ->setPostalCode('PostalCode')
+        ->setCity('City')
+        ->setState('State')
+        ->setStreet('Street')
+        ->setCountryOrRegion('Country')
+    ;
+
+    /** @var Microsoft\Graph\Model\EmailAddress $emailAddress */
+    $emailAddress = new EmailAddress();
+    $emailAddress
+        ->setName('DisplayName')
+        ->setAddress('email@gmail.com')
+    ;
+    
+    /** @var Microsoft\Graph\Model\Contact $newContact */
+    $newContact = new Model\Contact();
+    $newContact
+        ->setNickName('NickName')
+        ->setDisplayName('DisplayName')
+        ->setMiddleName('MiddleName')
+        ->setGivenName('GivenName')
+        ->setBusinessAddress($businessAddress)
+        ->setEmailAddresses($emailAddress)
+        ...
+    ;
+
+    $contact = $contactManager->addContact($newContact);
+    dump($contact);
+```
 
 # Example get events from outlook calendar
-
 ``` php
 // Get calendar service 
-    $calendar= $this->get('microsoft_graph.calendar');
+    $calendarManager = $this->get('microsoft_graph.calendar');
             
 //Get a collection of Microsoft\Graph\Model\Event
     $startTime = new DateTime("first day of this month");
     $endTime = new DateTime("first day of next month");
     
-    $events = $calendar->getEvents($startTime,$endTime);
+    $events = $calendarManager->getEvents($startTime,$endTime);
 
 //Get a  Microsoft\Graph\Model\Event
-    $id='...'
-    $event= $calendar->getEvent($id);
+    $id='...';
+    $event = $calendarManager->getEvent($id);
      
 ```
-
-
  # Create an event
-   ``` php    
-            
+``` php
 //  create Microsoft\Graph\Model\Event and set properties
-    $newEvent= new Microsoft\Graph\Model\Event();              
-    $start= $calendar->getDateTimeTimeZone(new \DateTime('Now next minute'));
-    $end= $calendar->getDateTimeTimeZone(new \DateTime('Now next hour'));
+    $newEvent = new Microsoft\Graph\Model\Event();              
+    $start = $calendar->getDateTimeTimeZone(new \DateTime('Now next minute'));
+    $end = $calendar->getDateTimeTimeZone(new \DateTime('Now next hour'));
     
     $newEvent->setSubject('Controller Test Token');
     $newEvent->setStart($start);
     $newEvent->setEnd( $end);     
 
-    $event= $calendar->addEvent( $newEvent);
-     
+    $event= $calendarManager->addEvent( $newEvent);
+    
+    dump($event);
 ```
-
-            dump($event);
  # Update an event
 ``` php
-    $id='...'
-    $updateEvent= new Microsoft\Graph\Model\Event(); 
+    $id = '...';
+    $updateEvent = new Microsoft\Graph\Model\Event(); 
     $updateEvent->setId($id);
     $updateEvent->setSubject("I Forgot The Eggs!");
-    $event= $calendar->updateEvent( $updateEvent);
-
+    $event = $calendarManager->updateEvent($updateEvent);
 ``` 
-
  # Delete an event
 ``` php
-    $id='...'
-    $response= $calendar->deleteEvent( $id);
-    dump($response->getStatus()==204?"Event deleted":$response);
-
+    $id='...';
+    $response = $calendar->deleteEvent($id);
+    dump($response->getStatus()==204 ? "Event deleted" : $response);
 ```
-
-
-### TODOS
-> Abstract Entities
-> Documentation

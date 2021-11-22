@@ -21,16 +21,16 @@ use Exception;
  */
 class MicrosoftGraphClient
 {
-    public const AUTHORITY_URL = 'https://login.microsoftonline.com/6b948520-d8da-4240-9a4a-cc6bc4ecb14c';
+    public const AUTHORITY_URL = 'https://login.microsoftonline.com';
     public const RESOURCE_ID = 'https://graph.microsoft.com';
     private MicrosoftGraphProvider $provider;
     private FilesystemAdapter $cacheAdapter;
-    private ?OutputInterface $output;
     private array $config;
     private $storageManager;
 
-    private $expires;
+    private int $expires;
     private string $cacheDirectory;
+    private string $tenantId;
 
     /**
      * MicrosoftGraphClient constructor.
@@ -41,8 +41,9 @@ class MicrosoftGraphClient
         $this->config = $container->getParameter('microsoft_graph');
         $this->storageManager = $container->get($this->config['storage_manager']);
         $this->expires = 525600; //1 year
-        $cacheDirectory = $container->getParameter('kernel.project_dir') . ($this->config['cache_path'] ?? '/var/cache_adapter');
-        $this->cacheAdapter = new FilesystemAdapter('app.cache.microsoft_graph', $this->expires, $cacheDirectory);
+        $this->cacheDirectory = $container->getParameter('kernel.project_dir') . ($this->config['cache_path'] ?? '/var/cache_adapter');
+        $this->tenantId = $this->config['tenant_id'] ?? '';
+        $this->cacheAdapter = new FilesystemAdapter('app.cache.microsoft_graph', $this->expires, $this->cacheDirectory);
         
         $options = [
             'clientId' => $this->config['client_id'],
@@ -50,8 +51,8 @@ class MicrosoftGraphClient
             //'redirectUri' => "http://localhost:8000" . $container->get('router')->generate($this->config['redirect_uri']),
             'redirectUri' => "https://localhost/microsoft-graph/auth",
             'urlResourceOwnerDetails' => self::RESOURCE_ID . "/v1.0/me",
-            "urlAccessToken" => self::AUTHORITY_URL . '/oauth2/v2.0/token',
-            "urlAuthorize" => self::AUTHORITY_URL . '/oauth2/v2.0/authorize',
+            "urlAccessToken" => self::AUTHORITY_URL . '/'. $this->tenantId .'/oauth2/v2.0/token',
+            "urlAuthorize" => self::AUTHORITY_URL . '/'. $this->tenantId . '/oauth2/v2.0/authorize',
         ];
         
         $this->provider = new MicrosoftGraphProvider($options);
