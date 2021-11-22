@@ -3,12 +3,10 @@
 namespace TotalCRM\MicrosoftGraph\DependencyInjection;
 
 use TotalCRM\MicrosoftGraph\Token\SessionStorage;
-use TotalCRM\MicrosoftGraph\Exception\RedirectException;
 
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 use League\OAuth2\Client\Provider\AbstractProvider;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
@@ -26,9 +24,9 @@ class MicrosoftGraphClient
     public const AUTHORITY_URL = 'https://login.microsoftonline.com/6b948520-d8da-4240-9a4a-cc6bc4ecb14c';
     public const RESOURCE_ID = 'https://graph.microsoft.com';
     private MicrosoftGraphProvider $provider;
+    private FilesystemAdapter $cacheAdapter;
     private ?OutputInterface $output;
     private array $config;
-    //private $router;
     private $storageManager;
 
     private $expires;
@@ -42,10 +40,9 @@ class MicrosoftGraphClient
     {
         $this->config = $container->getParameter('microsoft_graph');
         $this->storageManager = $container->get($this->config['storage_manager']);
-        //$this->router = $container->get('router');
-
-        $this->expires = 1000 * 600 * 6;
-        $this->cacheDirectory = $container->getParameter('kernel.project_dir') . '/cacheAdapter';
+        $this->expires = 525600; //1 year
+        $cacheDirectory = $container->getParameter('kernel.project_dir') . ($this->config['cache_path'] ?? '/var/cache_adapter');
+        $this->cacheAdapter = new FilesystemAdapter('app.cache.microsoft_graph', $this->expires, $cacheDirectory);
         
         $options = [
             'clientId' => $this->config['client_id'],
@@ -68,6 +65,7 @@ class MicrosoftGraphClient
         $token = $this->provider->getAccessToken('authorization_code', [
             'code' => $code,
         ]);
+
         $this->storageManager->setToken($token);
     }
 
@@ -83,28 +81,17 @@ class MicrosoftGraphClient
     /**
      * Creates a RedirectResponse that will send the user to the OAuth2 server (e.g. send them to Facebook).
      * @param OutputInterface|null $output
-     * @return void
-     * @throws RedirectException
+     * @return string
      */
-    public function redirect(?OutputInterface $output = null): void
+    public function redirect(?OutputInterface $output = null): string
     {
         $options = [];
         $scopes = $this->config["scopes"];
         if (!empty($scopes)) {
             $options['scope'] = implode(" ", $scopes);
         }
-        $url = $this->provider->getAuthorizationUrl($options);
 
-        if ($output instanceof OutputInterface) {
-            $output->writeln('<info>####################################################################</info>');
-            $output->writeln('<info>Log in using the specified link</info>');
-            $output->writeln('<info>'.$url.'</info>');
-            $output->writeln('<info>####################################################################</info>');
-            
-            return;
-        }
-
-        throw new RedirectException(new RedirectResponse($url));
+        return $this->provider->getAuthorizationUrl($options);
     }
 
     /**
@@ -115,12 +102,10 @@ class MicrosoftGraphClient
     public function getAccessToken(): AccessToken
     {
 
-        /** @var FilesystemAdapter $cache */
-        $cache = new FilesystemAdapter('app.cache.authorization_code', $this->expires, $this->cacheDirectory);
         $cacheKey = 'authorization_code';
         $authorizationCode = null;
 
-        $cacheItem = $cache->getItem($cacheKey);
+        $cacheItem = $this->cacheAdapter->getItem($cacheKey);
         if ($cacheItem && $cacheItem->isHit()) {
             $authorizationCode = $cacheItem->get();
         }

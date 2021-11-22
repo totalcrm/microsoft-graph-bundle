@@ -12,12 +12,9 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class SessionStorage implements TokenStorageInterface
 {
-    //private ContainerInterface $container;
     private FilesystemAdapter $cacheAdapter;
-
-    private int $expires;
     private string $cacheKey;
-    //private string $cacheDirectory;
+    private int $expires;
 
     /**
      * SessionStorage constructor.
@@ -25,12 +22,11 @@ class SessionStorage implements TokenStorageInterface
      */
     public function __construct(ContainerInterface $container)
     {
-        //$this->container = $container;
+        $config = $container->getParameter('microsoft_graph');
 
         $this->expires = 525600; //1 year
         $this->cacheKey = 'microsoft_graph';
-        $cacheDirectory = $container->getParameter('kernel.project_dir') . '/cacheAdapter';
-
+        $cacheDirectory = $container->getParameter('kernel.project_dir') . ($config['cache_path'] ?? '/var/cache_adapter');
         $this->cacheAdapter = new FilesystemAdapter('app.cache.microsoft_graph', $this->expires, $cacheDirectory);
     }
 
