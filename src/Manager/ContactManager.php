@@ -40,11 +40,13 @@ class ContactManager
     }
 
     /**
-     * @param $contactFolder
+     * @param string $contactFolder
+     * @param bool|null $isContactAll
+     * @param GraphCollectionRequest|null $collectionRequest
      * @return mixed
      * @throws Exception
      */
-    public function getContacts($contactFolder = null)
+    public function getContacts($contactFolder = null, $isContactAll = true, GraphCollectionRequest $collectionRequest = null)
     {
         if ($contactFolder !== null) {
             $endpoint = '/me/contactfolders/'.$contactFolder.'/contacts';
@@ -52,12 +54,14 @@ class ContactManager
             $endpoint = '/me/contacts'; 
         }
 
-        /** @var GraphCollectionRequest $collectionRequest */
-        $collectionRequest = $this->request
-            ->createCollectionRequest("GET", $endpoint)
-            ->setReturnType(Model\Contact::class)
-        ;
-        $collectionRequest->setPageSize(500);
+        if (!$collectionRequest) {
+            /** @var GraphCollectionRequest $collectionRequest */
+            $collectionRequest = $this->request
+                ->createCollectionRequest("GET", $endpoint)
+                ->setReturnType(Model\Contact::class);
+            $collectionRequest->setPageSize(500);
+        }
+        
         $results = [];
         $iteration = 1;
         $totalItems = 0;
@@ -83,7 +87,7 @@ class ContactManager
             $results[] = $item;
         }
 
-        if ($iteration <= 100 && !$collectionRequest->isEnd()) {
+        if ($iteration <= 1000 && !$collectionRequest->isEnd() && $isContactAll) {
             ++$iteration;
             goto execute;
         }
@@ -93,6 +97,14 @@ class ContactManager
             $cursor->moveUp();
             $cursor->clearLine();
             $this->output->writeln(['<info>' . $dt->format('Y-m-d H:i:s') . ' - Total imported: '.$totalItems.'</info>']);
+        }
+
+        if (!$isContactAll) {
+            return [
+                'results' => $results,
+                'collectionRequest' => $collectionRequest,
+                'isEnd' => $collectionRequest->isEnd()
+            ];
         }
 
         return $results;
@@ -114,10 +126,10 @@ class ContactManager
 
     /**
      * @param $contactId
-     * @return Model\Contact[]|array
+     * @return Model\Contact|mixed
      * @throws Exception
      */
-    public function getContact($contactId = null): array
+    public function getContact($contactId = null)
     {
         if ($contactId === null) {
             throw new RuntimeException("Your contactId is null");

@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="ed1ac610-7780-4c76-a88c-55d5e25fafe9" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/composer.json" beforeDir="false" afterPath="$PROJECT_DIR$/composer.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Controller/DefaultController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/DefaultController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/DependencyInjection/Configuration.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/DependencyInjection/Configuration.php" afterDir="false" />
@@ -13,13 +14,13 @@
       <change beforePath="$PROJECT_DIR$/src/Entity/MicrosoftGraphTokenInterface.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/MicrosoftGraphTokenInterface.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/EventListener/RedirectExceptionListener.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/EventListener/RedirectExceptionListener.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Exception/RedirectException.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Exception/RedirectException.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Manager/CalendarManager.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Manager/CalendarManager.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/MicrosoftGraphBundle.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/MicrosoftGraphBundle.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Resources/config/routing.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/Resources/config/routing.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Resources/config/services.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/Resources/config/services.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Resources/views/Default/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/src/Resources/views/Default/index.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Service/Calendar.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Service/Calendar.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Token/SessionStorage.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Token/SessionStorage.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Token/TokenStorageInterface.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Token/TokenStorageInterface.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/TotalCRMMicrosoftGraphBundle.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/TotalCRMMicrosoftGraphBundle.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -63,6 +64,8 @@
       <updated>1636894032762</updated>
       <workItem from="1636894034032" duration="2144000" />
       <workItem from="1637043684681" duration="4474000" />
+      <workItem from="1645975706767" duration="30000" />
+      <workItem from="1648637784006" duration="1936000" />
     </task>
     <servers />
   </component>
