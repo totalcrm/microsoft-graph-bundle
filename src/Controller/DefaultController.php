@@ -82,9 +82,7 @@ class DefaultController extends AbstractController
     public function connectCheckAction(Request $request): RedirectResponse
     {
         /** @var MicrosoftGraphClient $client */
-        $client = $this->container->get('microsoft_graph.client');
-        /** @var SessionStorage $client */
-        $tokenStorage = $this->container->get("microsoft_graph.session_storage");
+        $client = $this->get('microsoft_graph.client');
 
         $authorizationCode = $request->get('code');
         $client->setAuthorizationCode($authorizationCode);
