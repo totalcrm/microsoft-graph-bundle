@@ -2,6 +2,7 @@
 
 namespace TotalCRM\MicrosoftGraph\Controller;
 
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use TotalCRM\MicrosoftGraph\DependencyInjection\MicrosoftGraphClient;
 
 use Symfony\Component\Routing\Annotation\Route;
@@ -20,7 +21,6 @@ use Exception;
  */
 class DefaultController extends AbstractController
 {
-
     /**
      * @param Request $request
      * @return mixed
@@ -28,8 +28,8 @@ class DefaultController extends AbstractController
      */
     public function indexAction(Request $request)
     {
-        $client = $this->get('microsoft_graph.client');
-        $session = $this->get('session');
+        $client = $this->container->get('microsoft_graph.client');
+        $session = $this->container->get('session');
 
         /*
         try {
@@ -81,11 +81,13 @@ class DefaultController extends AbstractController
     public function connectCheckAction(Request $request): RedirectResponse
     {
         /** @var MicrosoftGraphClient $client */
-        $client = $this->get('microsoft_graph.client');
-        $token = $client->getAccessToken();
-        $tokenStorage = $this->get("microsoft_graph.session_storage");
+        $client = $this->container->get('microsoft_graph.client');
+        /** @var SessionStorage $client */
+        $tokenStorage = $this->container->get("microsoft_graph.session_storage");
+        $token = $client->getNewToken();
         $tokenStorage->setToken($token);
-        $homePage = $this->getParameter("microsoft_graph")["home_page"];
+
+        $homePage = $this->container->getParameter("microsoft_graph")["home_page"];
 
         return new RedirectResponse($this->generateUrl($homePage));
     }

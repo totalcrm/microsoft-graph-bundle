@@ -1,11 +1,11 @@
 microsoft_graph_connect:
   path:     /login
-  defaults: { _controller: TotalCRMMicrosoftGraph:Default:connect }
+  defaults: { _controller: TotalCRM\MicrosoftGraph\Controller\DefaultController::connectAction }
 
 microsoft_graph_check:
   path:     /check
-  defaults: { _controller: TotalCRMMicrosoftGraph:Default:connectCheck }
+  defaults: { _controller: TotalCRM\MicrosoftGraph\Controller\DefaultController::connectCheckAction }
 
 microsoft_graph_homepage:
   path:     /home
-  defaults: { _controller: TotalCRMMicrosoftGraph:Default:index }
+  defaults: { _controller: TotalCRM\MicrosoftGraph\Controller\DefaultController::indexAction }

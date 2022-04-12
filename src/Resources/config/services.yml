@@ -1,4 +1,9 @@
 services:
+
+    TotalCRM\MicrosoftGraph\Controller\DefaultController:
+        public: true
+        autowire: true
+
     microsoft_graph.client:
         public: true
         class: TotalCRM\MicrosoftGraph\DependencyInjection\MicrosoftGraphClient

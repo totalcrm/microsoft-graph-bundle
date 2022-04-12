@@ -7,6 +7,7 @@ use TotalCRM\MicrosoftGraph\Token\SessionStorage;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 use League\OAuth2\Client\Provider\AbstractProvider;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
@@ -48,8 +49,7 @@ class MicrosoftGraphClient
         $options = [
             'clientId' => $this->config['client_id'],
             'clientSecret' => $this->config['client_secret'],
-            //'redirectUri' => "http://localhost:8000" . $container->get('router')->generate($this->config['redirect_uri']),
-            'redirectUri' => "https://localhost/microsoft-graph/auth",
+            'redirectUri' => $container->get('router')->generate($this->config['redirect_uri'], [], UrlGeneratorInterface::ABSOLUTE_URL),
             'urlResourceOwnerDetails' => self::RESOURCE_ID . "/v1.0/me",
             "urlAccessToken" => self::AUTHORITY_URL . '/'. $this->tenantId .'/oauth2/v2.0/token',
             "urlAuthorize" => self::AUTHORITY_URL . '/'. $this->tenantId . '/oauth2/v2.0/authorize',
