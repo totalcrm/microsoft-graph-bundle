@@ -14,6 +14,7 @@ use Microsoft\Graph\Graph;
 use Microsoft\Graph\Model;
 use DateTime;
 use Exception;
+use Twig\Error\RuntimeError;
 
 /**
  * Class DefaultController
@@ -84,8 +85,15 @@ class DefaultController extends AbstractController
         $client = $this->container->get('microsoft_graph.client');
         /** @var SessionStorage $client */
         $tokenStorage = $this->container->get("microsoft_graph.session_storage");
-        $token = $client->getNewToken();
-        $tokenStorage->setToken($token);
+
+        $authorizationCode = $request->get('code');
+        $client->setAuthorizationCode($authorizationCode);
+
+        try {
+            $token = $client->getNewToken();
+        } catch (\Exception $exception) {
+            return new RedirectResponse($client->redirect());
+        }
 
         $homePage = $this->container->getParameter("microsoft_graph")["home_page"];
 
