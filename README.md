@@ -7,7 +7,7 @@
 The recommended way to install the bundle is through Composer.
 
 ```bash
-$ composer require 'totalcrm/microsoft_graph_bundle'
+$ composer require 'totalcrm/microsoft-graph-bundle'
 ```
 
 Symfony 3: add MicrosoftGraphBundle in AppKernel.php registerBundles()
