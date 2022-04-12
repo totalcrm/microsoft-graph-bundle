@@ -1,9 +1,9 @@
 {
-    "name": "totalcrm/microsoft_graph_bundle",
+    "name": "totalcrm/microsoft-graph-bundle",
     "type": "symfony-bundle",
     "description": "Symfony bundle for API MicrosoftGraph",
     "keywords": ["symfony", "calendar", "bundle", "contacts", "microsoftgraph", "microsoft", "office 365"],
-    "homepage": "https://github.com/totalcrm/microsoft_graph_bundle",
+    "homepage": "https://github.com/totalcrm/microsoft-graph-bundle",
     "license": "MIT",
     "authors": [
         {
