@@ -26,8 +26,8 @@ class MicrosoftGraphClient
     public const RESOURCE_ID = 'https://graph.microsoft.com';
     private MicrosoftGraphProvider $provider;
     private FilesystemAdapter $cacheAdapter;
+    private SessionStorage $storageManager;
     private array $config;
-    private $storageManager;
 
     private int $expires;
     private string $cacheDirectory;
@@ -36,26 +36,27 @@ class MicrosoftGraphClient
     /**
      * MicrosoftGraphClient constructor.
      * @param ContainerInterface $container
+     * @param array|null $options
      */
     public function __construct(ContainerInterface $container)
     {
         $this->config = $container->getParameter('microsoft_graph');
-        $this->storageManager = $container->get($this->config['storage_manager']);
-        $this->expires = 525600; //1 year
+        $this->storageManager = $container->get('microsoft_graph.session_storage');
+        $this->expires = $this->config['expires'] ?? 525600; //1 year
         $this->cacheDirectory = $container->getParameter('kernel.project_dir') . ($this->config['cache_path'] ?? '/var/cache_adapter');
         $this->tenantId = $this->config['tenant_id'] ?? '';
         $this->cacheAdapter = new FilesystemAdapter('app.cache.microsoft_graph', $this->expires, $this->cacheDirectory);
         
-        $options = [
-            'clientId' => $this->config['client_id'],
-            'clientSecret' => $this->config['client_secret'],
+        $params = [
+            'clientId' => $this->config['client_id'] ?? '',
+            'clientSecret' => $this->config['client_secret'] ?? '',
             'redirectUri' => $container->get('router')->generate($this->config['redirect_uri'], [], UrlGeneratorInterface::ABSOLUTE_URL),
             'urlResourceOwnerDetails' => self::RESOURCE_ID . "/v1.0/me",
             "urlAccessToken" => self::AUTHORITY_URL . '/'. $this->tenantId .'/oauth2/v2.0/token',
             "urlAuthorize" => self::AUTHORITY_URL . '/'. $this->tenantId . '/oauth2/v2.0/authorize',
         ];
         
-        $this->provider = new MicrosoftGraphProvider($options);
+        $this->provider = new MicrosoftGraphProvider($params);
     }
 
     /**
@@ -87,7 +88,7 @@ class MicrosoftGraphClient
     public function redirect(?OutputInterface $output = null): string
     {
         $options = [];
-        $scopes = $this->config["scopes"];
+        $scopes = $this->config["scopes"] ?? '';
         if (!empty($scopes)) {
             $options['scope'] = implode(" ", $scopes);
         }
@@ -121,9 +122,9 @@ class MicrosoftGraphClient
     }
 
     /**
-     * @return mixed
+     * @return SessionStorage
      */
-    public function getstorageManager()
+    public function getStorageManager()
     {
         return $this->storageManager;
     }
@@ -161,7 +162,7 @@ class MicrosoftGraphClient
      * @return AccessToken
      * @throws Exception
      */
-    public function getNewToken(): AccessToken
+    public function refreshToken(): AccessToken
     {
         /** @var AccessToken $oldToken */
         $oldToken = $this->storageManager->getToken();

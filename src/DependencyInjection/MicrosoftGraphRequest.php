@@ -38,7 +38,7 @@ class MicrosoftGraphRequest
         if (in_array($version, ['v1.0', 'beta'])) {
             $this->graph->setApiVersion($version);
         } else {
-            $version = $this->client->getConfig()['version'];
+            $version = $this->client->getConfig()['version'] ?? null;
             if (in_array($version, ['v1.0', 'beta'])) {
                 $this->graph->setApiVersion();
             }
@@ -51,7 +51,7 @@ class MicrosoftGraphRequest
      */
     public function getToken()
     {
-        return $this->client->getNewToken()->getToken();
+        return $this->client->refreshToken()->getToken();
     }
 
     /**

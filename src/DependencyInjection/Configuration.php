@@ -28,7 +28,6 @@ class Configuration implements ConfigurationInterface
             ->scalarNode('home_page')->end()
             ->scalarNode('prefer_time_zone')->end()
             ->scalarNode('version')->end()
-            ->scalarNode('storage_manager')->end()
             ->scalarNode('stateless')->end()
             ->scalarNode('contact_folder')->end()
             ->variableNode('scopes')->end()
