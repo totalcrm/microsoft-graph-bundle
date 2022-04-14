@@ -50,7 +50,8 @@ class MicrosoftGraphClient
         $params = [
             'clientId' => $this->config['client_id'] ?? '',
             'clientSecret' => $this->config['client_secret'] ?? '',
-            'redirectUri' => $container->get('router')->generate($this->config['redirect_uri'], [], UrlGeneratorInterface::ABSOLUTE_URL),
+            //'redirectUri' => $container->get('router')->generate($this->config['redirect_uri'], [], UrlGeneratorInterface::ABSOLUTE_URL),
+            'redirectUri' => $this->config['redirect_uri'],
             'urlResourceOwnerDetails' => self::RESOURCE_ID . "/v1.0/me",
             "urlAccessToken" => self::AUTHORITY_URL . '/'. $this->tenantId .'/oauth2/v2.0/token',
             "urlAuthorize" => self::AUTHORITY_URL . '/'. $this->tenantId . '/oauth2/v2.0/authorize',
