@@ -61,15 +61,17 @@ class MicrosoftGraphClient
     }
 
     /**
-     * @param $code
+     * @param string|null $code
+     * @return AccessToken
      */
-    public function setAuthorizationCode($code): void
+    public function setAuthorizationCode(?string $code = ''): AccessToken
     {
-        $token = $this->provider->getAccessToken('authorization_code', [
+        $accessToken = $this->provider->getAccessToken('authorization_code', [
             'code' => $code,
         ]);
+        $this->storageManager->setToken($accessToken);
 
-        $this->storageManager->setToken($token);
+        return $accessToken;
     }
 
     /**
