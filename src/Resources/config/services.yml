@@ -1,10 +1,9 @@
 services:
 
-    microsoft_graph.controller_handlers:
-        public: true
-        namespace: TotalCRM\MicrosoftGraph\Controller\
-        resource: '../../../src/Controller/*'
-        tags: [microsoft_graph.controller_handlers]
+    TotalCRM\MicrosoftGraph\Controller\DefaultController:
+        calls:
+            - method: setContainer
+              arguments: ['@service_container']
 
     microsoft_graph.client:
         public: true
