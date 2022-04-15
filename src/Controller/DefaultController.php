@@ -26,7 +26,7 @@ class DefaultController extends AbstractController
     public function requestAction(Request $request): RedirectResponse
     {
         /** @var MicrosoftGraphClient $client */
-        $client = $this->get('microsoft_graph.client');
+        $client = $this->container->get('microsoft_graph.client');
 
         return new RedirectResponse($client->redirect());
     }
@@ -39,7 +39,7 @@ class DefaultController extends AbstractController
     public function authAction(Request $request): RedirectResponse
     {
         /** @var MicrosoftGraphClient $client */
-        $client = $this->get('microsoft_graph.client');
+        $client = $this->container->get('microsoft_graph.client');
         $authorizationCode = $request->get('code');
 
         try {
