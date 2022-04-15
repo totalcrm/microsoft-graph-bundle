@@ -37,7 +37,6 @@ microsoft_graph:
     client_secret: "%env(MS_GRAPH_CLIENT_SECRET)%"
     tenant_id: "%env(MS_GRAPH_TENANT_ID)%"
     contact_folder: "%env(MS_GRAPH_CONTACT_FOLDER)%"
-    storage_manager: "microsoft_graph.session_storage"
     redirect_uri: "app_dashboard"
     home_page: "app_dashboard"
     prefer_time_zone: "%env(MS_GRAPH_TIMEZONE_UTC)%" 
