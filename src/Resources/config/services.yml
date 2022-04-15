@@ -1,9 +1,15 @@
 services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
 
-    TotalCRM\MicrosoftGraph\Controller\DefaultController:
-        calls:
-            - method: setContainer
-              arguments: ['@service_container']
+    TotalCRM\MicrosoftGraph\:
+        resource: '../../../src/'
+        exclude:
+            - '../../../src/DependencyInjection/'
+            - '../../../src/Manager/'
+            - '../../../src/EventListener/'
+            - '../../../src/Token/'
 
     microsoft_graph.client:
         public: true
