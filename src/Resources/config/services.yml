@@ -1,7 +1,10 @@
 services:
 
-    TotalCRM\MicrosoftGraph\Controller\DefaultController:
+    microsoft_graph.controller_handlers:
         public: true
+        namespace: TotalCRM\MicrosoftGraph\Controller\
+        resource: '../../../src/Controller/*'
+        tags: [microsoft_graph.controller_handlers]
 
     microsoft_graph.client:
         public: true

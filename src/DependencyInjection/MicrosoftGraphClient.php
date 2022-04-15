@@ -67,7 +67,7 @@ class MicrosoftGraphClient
     public function setAuthorizationCode(?string $code = ''): AccessToken
     {
         $accessToken = $this->provider->getAccessToken('authorization_code', [
-            'code' => $code,
+            'code' => $code ?: '',
         ]);
         $this->storageManager->setToken($accessToken);
 
