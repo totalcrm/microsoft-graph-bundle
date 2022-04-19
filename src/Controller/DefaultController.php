@@ -59,7 +59,7 @@ class DefaultController extends AbstractController
         } catch (\Exception $e) {
         }
 
-        $redirectPage = $this->containerInterface->getParameter("microsoft_graph")["home_page"];
+        $redirectPage = $this->containerInterface->getParameter("microsoft_graph")["homepage_route"];
 
         return new RedirectResponse($this->generateUrl($redirectPage, $request->query->all()));
     }

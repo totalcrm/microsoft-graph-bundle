@@ -38,7 +38,7 @@ microsoft_graph:
     tenant_id: "%env(MS_GRAPH_TENANT_ID)%"
     contact_folder: "%env(MS_GRAPH_CONTACT_FOLDER)%"
     redirect_uri: "app_dashboard"
-    home_page: "app_dashboard"
+    homepage_route: "app_dashboard"
     prefer_time_zone: "%env(MS_GRAPH_TIMEZONE_UTC)%" 
     version: "1.0"
     scopes:  # see more details https://developer.microsoft.com/en-us/graph/docs/authorization/permission_scopes

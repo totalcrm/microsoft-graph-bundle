@@ -125,6 +125,55 @@ class ContactManager
     }
 
     /**
+     * @param string|null $email
+     * @return Model\Contact|mixed
+     * @throws Exception
+     */
+    public function findContactdByEmail($email = null, $contactFolder = null)
+    {
+        if ($email === null) {
+            throw new RuntimeException("Your email is null");
+        }
+
+        if ($contactFolder !== null) {
+            $endpoint = '/me/contactfolders/'.$contactFolder.'/contacts';
+        } else {
+            $endpoint = '/me/contacts';
+        }
+
+        return $this->request
+            ->createRequest('GET', $endpoint . '?$filter=emailAddresses/any(a:a/address eq ' . urlencode("'" . $email . "'") . ')&$count=true')
+            ->setReturnType(Model\Contact::class)
+            ->execute();
+    }
+
+    /**
+     * @param string|null $email
+     * @return Model\Contact|mixed
+     * @throws Exception
+     */
+    public function findContactdByPhone($phone = null, $contactFolder = null)
+    {
+        if ($phone === null) {
+            throw new RuntimeException("Your phone is null");
+        }
+
+        if ($contactFolder !== null) {
+            $endpoint = '/me/contactfolders/'.$contactFolder.'/contacts';
+        } else {
+            $endpoint = '/me/contacts';
+        }
+        $request = $this->request
+            ->createRequest('GET', $endpoint 
+                . '?$filter=(mobilePhone eq ' . urlencode("'". $phone . "'") .') or homePhones/any(p:p eq ' . urlencode("'" . $phone . "'") . '))&$count=true')
+            ->addHeaders(["ConsistencyLevel" => "eventual"])
+            ->setReturnType(Model\Contact::class)
+        ;
+
+        return $request->execute();
+    }
+
+    /**
      * @param $contactId
      * @return Model\Contact|mixed
      * @throws Exception

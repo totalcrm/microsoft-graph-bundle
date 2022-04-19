@@ -26,6 +26,11 @@ services:
         class: TotalCRM\MicrosoftGraph\Manager\ContactManager
         arguments: ["@microsoft_graph.request"]
 
+    microsoft_graph.subscriptions_manager:
+        public: true
+        class: TotalCRM\MicrosoftGraph\Manager\SubscriptionsManager
+        arguments: ["@microsoft_graph.request"]
+
     microsoft_graph.calendar_manager:
         public: true
         class: TotalCRM\MicrosoftGraph\Manager\CalendarManager
