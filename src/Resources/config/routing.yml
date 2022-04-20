@@ -1,0 +1,7 @@
+microsoft_graph_auth:
+  path:     /auth
+  defaults: { _controller: TotalCRM\MicrosoftGraph\Controller\DefaultController::authAction }
+
+microsoft_graph_request:
+  path:     /request
+  defaults: { _controller: TotalCRM\MicrosoftGraph\Controller\DefaultController::requestAction }
