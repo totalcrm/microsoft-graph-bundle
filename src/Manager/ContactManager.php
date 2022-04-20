@@ -21,6 +21,7 @@ use Exception;
 class ContactManager
 {
     private MicrosoftGraphRequest $request;
+    private ?OutputInterface $output = null;
 
     /**
      * ContactManager constructor.
@@ -58,7 +59,8 @@ class ContactManager
             /** @var GraphCollectionRequest $collectionRequest */
             $collectionRequest = $this->request
                 ->createCollectionRequest("GET", $endpoint)
-                ->setReturnType(Model\Contact::class);
+                ->setReturnType(Model\Contact::class)
+            ;
             $collectionRequest->setPageSize(500);
         }
         
@@ -111,7 +113,7 @@ class ContactManager
     }
 
     /**
-     * @return Model\Contact[]|array
+     * @return Model\Contact|array
      * @throws Exception
      */
     public function getContactFolders(): array
@@ -125,18 +127,32 @@ class ContactManager
     }
 
     /**
+     * @return Model\Contact|null
+     * @throws Exception
+     */
+    public function getContactFolder($contactFolder = null)
+    {
+        $endpoint = '/me/contactFolders/' . $contactFolder;
+
+        return $this->request
+            ->createCollectionRequest("GET", $endpoint)
+            ->setReturnType(Model\Contact::class)
+            ->execute();
+    }
+
+    /**
      * @param string|null $email
      * @return Model\Contact|mixed
      * @throws Exception
      */
-    public function findContactdByEmail($email = null, $contactFolder = null)
+    public function findContactsByEmail($email = null, $contactFolder = null)
     {
         if ($email === null) {
             throw new RuntimeException("Your email is null");
         }
 
         if ($contactFolder !== null) {
-            $endpoint = '/me/contactfolders/'.$contactFolder.'/contacts';
+            $endpoint = '/me/contactfolders/' . $contactFolder.'/contacts';
         } else {
             $endpoint = '/me/contacts';
         }
@@ -152,7 +168,7 @@ class ContactManager
      * @return Model\Contact|mixed
      * @throws Exception
      */
-    public function findContactdByPhone($phone = null, $contactFolder = null)
+    public function findContactsByPhone($phone = null, $contactFolder = null)
     {
         if ($phone === null) {
             throw new RuntimeException("Your phone is null");
@@ -164,8 +180,7 @@ class ContactManager
             $endpoint = '/me/contacts';
         }
         $request = $this->request
-            ->createRequest('GET', $endpoint 
-                . '?$filter=(mobilePhone eq ' . urlencode("'". $phone . "'") .') or homePhones/any(p:p eq ' . urlencode("'" . $phone . "'") . '))&$count=true')
+            ->createRequest('GET', $endpoint . '?$filter=mobilePhone eq ' . urlencode("'". $phone . "'") .'&$count=true')
             ->addHeaders(["ConsistencyLevel" => "eventual"])
             ->setReturnType(Model\Contact::class)
         ;
@@ -184,10 +199,12 @@ class ContactManager
             throw new RuntimeException("Your contactId is null");
         }
 
-        return $this->request
+        $request = $this->request
             ->createRequest('GET', '/me/contacts/' . $contactId)
             ->setReturnType(Model\Contact::class)
-            ->execute();
+        ;
+        
+        return $request->execute();
     }
 
     /**

@@ -36,6 +36,11 @@ services:
         class: TotalCRM\MicrosoftGraph\Manager\CalendarManager
         arguments: ["@microsoft_graph.request"]
 
+    microsoft_graph.exchange_ids:
+        public: true
+        class: TotalCRM\MicrosoftGraph\Manager\ExchangeIdsManager
+        arguments: ["@microsoft_graph.request"]
+
     microsoft_graph.redirect_exception_listener:
         public: true
         class: TotalCRM\MicrosoftGraph\EventListener\RedirectExceptionListener

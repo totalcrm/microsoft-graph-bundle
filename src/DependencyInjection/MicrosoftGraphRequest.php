@@ -90,6 +90,7 @@ class MicrosoftGraphRequest
     {
         $this->setTokenGraph();
         $request = $this->graph->createRequest($requestType, $endpoint);
+        $request->addHeaders(["Prefer" => 'IdType="ImmutableId"']);
         if ($preferedTimeZone) {
             $request->addHeaders(["Prefer" => $this->getPreferTimeZone()]);
         }
