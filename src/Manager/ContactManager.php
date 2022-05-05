@@ -142,6 +142,7 @@ class ContactManager
 
     /**
      * @param string|null $email
+     * @param string|null $contactFolder
      * @return Model\Contact|mixed
      * @throws Exception
      */
@@ -164,7 +165,8 @@ class ContactManager
     }
 
     /**
-     * @param string|null $email
+     * @param string|null $phone
+     * @param string|null $contactFolder
      * @return Model\Contact|mixed
      * @throws Exception
      */
@@ -210,17 +212,24 @@ class ContactManager
     /**
      * Create an contact
      * @param Model\Contact $contact
+     * @param string|null $contactFolder
      * @return mixed|array|void
      * @throws Exception
      */
-    public function addContact(Model\Contact $contact = null)
+    public function addContact(Model\Contact $contact = null, $contactFolder = null)
     {
         if ($contact === null) {
             throw new RuntimeException("Your Contact is null");
         }
 
+        if ($contactFolder !== null) {
+            $endpoint = '/me/contactfolders/'.$contactFolder.'/contacts';
+        } else {
+            $endpoint = '/me/contacts';
+        }
+
         return $this->request
-            ->createRequest('POST', '/me/contacts')
+            ->createRequest('POST', $endpoint)
             ->attachBody($contact->jsonSerialize())
             ->setReturnType(Model\Contact::class)
             ->execute();
