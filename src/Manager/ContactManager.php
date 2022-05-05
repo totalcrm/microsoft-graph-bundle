@@ -230,7 +230,7 @@ class ContactManager
 
         return $this->request
             ->createRequest('POST', $endpoint)
-            ->attachBody($contact->jsonSerialize())
+            ->attachBody(json_encode($contact->jsonSerialize(), JSON_UNESCAPED_UNICODE))
             ->setReturnType(Model\Contact::class)
             ->execute();
     }
@@ -238,18 +238,25 @@ class ContactManager
     /**
      * Update an Contact
      * @param Model\Contact|null $contact
+     * @param string|null $contactFolder
      * @return mixed|array|void
      * @throws Exception
      */
-    public function updateContact(?Model\Contact $contact = null)
+    public function updateContact(?Model\Contact $contact = null, $contactFolder = null)
     {
         if ($contact === null) {
             throw new RuntimeException("Your contact is null");
         }
 
+        if ($contactFolder !== null) {
+            $endpoint = '/me/contactfolders/'.$contactFolder.'/contacts/' . $contact->getId();
+        } else {
+            $endpoint = '/me/contacts/' . $contact->getId();
+        }
+
         return $this->request
-            ->createRequest('PATCH', '/me/contacts/' . $contact->getId())
-            ->attachBody($contact->jsonSerialize())
+            ->createRequest('PATCH', $endpoint)
+            ->attachBody(json_encode($contact->jsonSerialize(), JSON_UNESCAPED_UNICODE))
             ->setReturnType(Model\Contact::class)
             ->execute();
     }
