@@ -228,11 +228,14 @@ class ContactManager
             $endpoint = '/me/contacts';
         }
 
-        return $this->request
+        $this->request
             ->createRequest('POST', $endpoint)
-            ->attachBody(json_encode($contact->jsonSerialize(), JSON_UNESCAPED_UNICODE))
-            ->setReturnType(Model\Contact::class)
-            ->execute();
+            ->attachBody($contact->jsonSerialize())
+            ->setReturnType(Model\Contact::class);
+
+        dump($this->request);
+
+        return $this->request->execute();
     }
 
     /**
@@ -256,7 +259,7 @@ class ContactManager
 
         return $this->request
             ->createRequest('PATCH', $endpoint)
-            ->attachBody(json_encode($contact->jsonSerialize(), JSON_UNESCAPED_UNICODE))
+            ->attachBody($contact->jsonSerialize())
             ->setReturnType(Model\Contact::class)
             ->execute();
     }
