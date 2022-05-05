@@ -228,14 +228,14 @@ class ContactManager
             $endpoint = '/me/contacts';
         }
 
-        $this->request
+        $request = $this->request
             ->createRequest('POST', $endpoint)
             ->attachBody($contact->jsonSerialize())
             ->setReturnType(Model\Contact::class);
 
-        dump($this->request);
+        dump($request);
 
-        return $this->request->execute();
+        return $request->execute();
     }
 
     /**
