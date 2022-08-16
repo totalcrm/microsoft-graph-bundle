@@ -38,7 +38,7 @@ class SubscriptionsManager
     public function getSubscriptions()
     {
         return $this->request
-            ->createRequest('GET', '/subscriptions')
+            ->createCollectionRequest('GET', '/subscriptions')
             ->setReturnType(Model\Subscription::class)
             ->execute();
     }
