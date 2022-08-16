@@ -56,7 +56,7 @@ class SubscriptionsManager
         }
 
         $request = $this->request
-            ->createRequest('POST', '/subscriptions')
+            ->createCollectionRequest('POST', '/subscriptions')
             ->attachBody($subscription->jsonSerialize())
             ->setReturnType(Model\Subscription::class)
         ;
